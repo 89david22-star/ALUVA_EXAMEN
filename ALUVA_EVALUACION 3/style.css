@@ -1,0 +1,617 @@
+/*
+===============================================================
+ALUVA - EVALUACIÓN N.º 3
+Migración a template estándar Bootstrap 4 "Startup Dark"
+===============================================================
+La base responsiva y los componentes (grilla, navbar, cards,
+formularios) provienen de Bootstrap 4, incluido en la plantilla
+entregada (vendor/css/bootstrap.min.css).
+
+Este archivo NO reemplaza a Bootstrap: lo complementa. Se carga
+DESPUÉS de bootstrap.min.css en el <head> del HTML, así que
+cualquier regla que escribamos aquí con el mismo selector le
+gana a la de Bootstrap (por orden de lectura del navegador).
+Con esto logramos "pintar" los componentes del framework con los
+colores y la personalidad de marca de ALUVA, sin tener que
+reescribir la grilla, el navbar o las tarjetas desde cero.
+===============================================================
+*/
+
+/* -------------------------------------------------------
+   VARIABLES DE COLOR (custom properties de CSS)
+   Guardamos cada color de la marca en una "variable" dentro de
+   :root (la raíz del documento), para poder reutilizarlo en
+   cualquier parte del archivo escribiendo var(--nombre).
+   Ventaja: si algún día cambia el color naranjo de ALUVA, se
+   edita en UN solo lugar y se actualiza en todo el sitio.
+------------------------------------------------------- */
+:root {
+  --aluva-navy: #0b1726;   /* azul muy oscuro: fondo del navbar y del footer */
+  --aluva-blue: #173b73;   /* azul medio: títulos y textos destacados */
+  --aluva-orange: #f28c28; /* naranjo de seguridad: acentos, bordes, botones */
+  --aluva-yellow: #f4c430; /* amarillo de alta visibilidad: detalles puntuales */
+  --aluva-light: #f4f6f8;  /* gris muy claro: fondos suaves (tarjetas de contacto, etc.) */
+  --aluva-text: #27303b;   /* color de texto general */
+  --aluva-muted: #66707d;  /* gris para textos secundarios (descripciones, bajadas) */
+}
+
+/*
+  scroll-behavior: smooth hace que, al hacer click en un enlace
+  del menú (por ejemplo "Productos"), la página se desplace de
+  forma animada hasta esa sección en vez de saltar de golpe.
+*/
+html {
+  scroll-behavior: smooth;
+}
+
+/*
+  Estilos base para TODO el texto del sitio.
+  padding-top: 74px es clave: como el navbar tiene la clase
+  "fixed-top" (queda flotando fijo arriba), sin este padding el
+  contenido de la página quedaría tapado detrás del menú al
+  cargar. 74px es, a propósito, un poco más alto que el navbar
+  real, para dejar un respiro visual.
+*/
+body {
+  color: var(--aluva-text);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.7;
+  padding-top: 74px;
+}
+
+/* =========================================================
+   NAVBAR
+   Estas reglas se aplican SOBRE el componente .navbar de
+   Bootstrap (definido en el HTML), solo para darle la
+   identidad visual de ALUVA.
+   ========================================================= */
+
+/* Fondo casi negro con transparencia + borde naranjo inferior, como sello de marca. */
+.aluva-navbar {
+  background: rgba(11, 23, 38, 0.98);
+  border-bottom: 3px solid var(--aluva-orange);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .22); /* sombra suave para separarlo del contenido de abajo */
+}
+
+/* Nombre "ALUVA" junto al logo: negrita fuerte y letras un poco separadas (letter-spacing). */
+.navbar-brand {
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+/* El logo se fuerza a un tamaño fijo y cuadrado, para que se vea igual sin importar el tamaño real de la foto. */
+.brand-logo {
+  width: 42px;
+  height: 42px;
+  object-fit: contain; /* la imagen se ajusta completa dentro del cuadro, sin recortarse ni deformarse */
+  border-radius: 4px;
+}
+
+/*
+  Los enlaces del menú (Inicio, Productos, etc.) vienen blancos
+  de Bootstrap por la clase "navbar-dark" del HTML; aquí solo
+  ajustamos opacidad, peso de fuente y la animación del hover.
+  El !important es necesario porque Bootstrap también define un
+  color para .nav-link con bastante "fuerza" (especificidad), y
+  sin !important nuestra regla no lograría sobrescribirlo.
+*/
+.aluva-navbar .nav-link {
+  color: rgba(255, 255, 255, .86) !important;
+  font-weight: 600;
+  margin-left: .35rem;
+  border-radius: .25rem;
+  transition: color .2s ease, background-color .2s ease; /* transición suave al pasar el mouse */
+}
+
+/* Al pasar el mouse (o enfocar con teclado), el link se aclara y aparece un fondo naranjo tenue. */
+.aluva-navbar .nav-link:hover,
+.aluva-navbar .nav-link:focus {
+  color: #fff !important;
+  background: rgba(242, 140, 40, .18);
+}
+
+/* =========================================================
+   HERO (sección #inicio)
+   ========================================================= */
+
+/*
+  min-height: 78vh hace que el hero ocupe casi toda la altura de
+  pantalla (vh = "viewport height", 1vh = 1% del alto visible),
+  sin llegar al 100% para dejar asomar un poco de la sección
+  siguiente y darle al usuario la pista de que puede seguir bajando.
+  position: relative es necesario para que el overlay de abajo
+  (que usa position: absolute) se ubique dentro de este bloque y
+  no de toda la página.
+*/
+.hero-section {
+  min-height: 78vh;
+  position: relative;
+  background-image: url("img/faena-1.jpeg");
+  background-position: center;
+  background-size: cover; /* la foto cubre todo el bloque, recortándose si hace falta, sin deformarse */
+  overflow: hidden;
+}
+
+/*
+  Capa que se dibuja ENCIMA de la foto de fondo (position: absolute
+  + inset: 0 la estira para cubrir exactamente el mismo espacio
+  que .hero-section). Es un degradado oscuro de izquierda a derecha:
+  muy oscuro donde va el texto (para que se lea bien en blanco) y
+  más transparente hacia la derecha, para que la foto se siga
+  apreciando.
+*/
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(7, 18, 31, .94) 0%, rgba(7, 18, 31, .72) 52%, rgba(7, 18, 31, .28) 100%);
+}
+
+/* z-index implícito: como .hero-content tiene position: relative, queda dibujado por encima del overlay. */
+.hero-content {
+  z-index: 1;
+}
+
+/* Estilo compartido por la "etiqueta" pequeña del hero y las etiquetas de cada sección (section-label). */
+.hero-kicker,
+.section-label {
+  color: var(--aluva-orange);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .18rem; /* separación entre letras, típico de textos "kicker" en mayúsculas */
+  text-transform: uppercase;
+}
+
+/* El título principal no ocupa más de 760px de ancho aunque la pantalla sea enorme, para que siga siendo legible. */
+.hero-section h1 {
+  max-width: 760px;
+  text-shadow: 0 3px 14px rgba(0, 0, 0, .32); /* sombra sutil para despegar el texto blanco de la foto */
+}
+
+.hero-section .lead {
+  max-width: 660px;
+}
+
+/* Botón principal de la marca: fondo naranjo sólido. */
+.btn-aluva {
+  color: #fff;
+  background: var(--aluva-orange);
+  border-color: var(--aluva-orange);
+  font-weight: 700;
+}
+
+/* Al pasar el mouse, se oscurece un poco el naranjo (efecto "presionado"). */
+.btn-aluva:hover,
+.btn-aluva:focus {
+  color: #fff;
+  background: #d97718;
+  border-color: #d97718;
+}
+
+/* =========================================================
+   ESPACIADO GENERAL DE SECCIONES
+   ========================================================= */
+
+/* Todas las secciones "normales" del sitio usan este mismo respiro vertical arriba y abajo. */
+.section-space {
+  padding: 88px 0;
+}
+
+/* El bloque de encabezado (etiqueta + título + bajada) no se estira más de 720px, aunque esté centrado en pantallas anchas. */
+.section-heading {
+  max-width: 720px;
+}
+
+/* Título de cada sección: mismo color y peso en todas, para que el sitio se sienta consistente. */
+.section-heading h2,
+#contacto h2,
+#personalizacion h2 {
+  color: var(--aluva-navy);
+  font-weight: 800;
+  margin: .45rem 0 .8rem;
+}
+
+.section-heading p {
+  color: var(--aluva-muted);
+}
+
+/* =========================================================
+   SECCIÓN "QUIÉNES SOMOS"
+   ========================================================= */
+
+/* La foto de la sección tiene una altura máxima para que no se vea gigante en pantallas muy altas; object-fit: cover la recorta prolijamente. */
+.about-photo {
+  width: 100%;
+  max-height: 620px;
+  object-fit: cover;
+}
+
+/* Tarjetas de Misión/Visión: fondo blanco + borde grueso naranjo a la izquierda, como un "marcador" de página. */
+.info-card {
+  background: #fff;
+  border-left: 4px solid var(--aluva-orange);
+  border-radius: .4rem;
+  box-shadow: 0 5px 20px rgba(11, 23, 38, .08); /* sombra bien difusa y suave, casi imperceptible pero le da profundidad */
+  padding: 1.25rem 1.35rem;
+}
+
+.info-card h3 {
+  color: var(--aluva-blue);
+  font-size: 1.18rem;
+  font-weight: 800;
+}
+
+/* Quita el margen inferior del último párrafo de la tarjeta, para que no quede un espacio vacío feo antes del borde. */
+.info-card p:last-child {
+  margin-bottom: 0;
+}
+
+/* =========================================================
+   SECCIÓN PRODUCTOS
+   ========================================================= */
+
+/*
+  Estilos sobre la tarjeta .card de Bootstrap (usada en cada
+  producto). overflow: hidden asegura que la imagen respete las
+  esquinas redondeadas de la tarjeta en vez de sobresalir.
+  La transición prepara la animación del hover de abajo.
+*/
+.product-card {
+  overflow: hidden;
+  border: 1px solid #e3e7eb;
+  border-radius: .6rem;
+  box-shadow: 0 4px 14px rgba(11, 23, 38, .07);
+  transition: transform .22s ease, box-shadow .22s ease;
+}
+
+/*
+  Efecto "flotar": al pasar el mouse, la tarjeta sube 5px
+  (translateY negativo = hacia arriba) y la sombra se hace más
+  grande y oscura, dando sensación de que la tarjeta se despega
+  de la pantalla.
+*/
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(11, 23, 38, .13);
+}
+
+/*
+  Todas las fotos de producto miden lo mismo (290px de alto) sin
+  importar las proporciones reales de cada imagen. object-fit:
+  contain hace que la foto completa quepa dentro de ese espacio
+  sin recortarse ni deformarse (a diferencia de "cover"), dejando
+  espacio en blanco si hace falta. El fondo blanco + padding le
+  dan aire a cada producto para que no se vea "pegado" al borde.
+*/
+.product-image {
+  height: 290px;
+  object-fit: contain;
+  background: #fff;
+  padding: 1rem;
+  border-bottom: 1px solid #eef0f2;
+}
+
+.product-card .card-body {
+  background: #fff;
+}
+
+.product-card h3 {
+  color: var(--aluva-blue);
+  font-weight: 800;
+}
+
+.product-card p {
+  color: var(--aluva-muted);
+  margin-bottom: 0;
+}
+
+/* =========================================================
+   SECCIÓN PERSONALIZACIÓN (banda de llamado a la acción / CTA)
+   ========================================================= */
+
+/*
+  Dos capas de fondo superpuestas, separadas por comas:
+  1) un degradado oscuro (de azul muy oscuro a azul ALUVA), y
+  2) por debajo, la foto faena-2.jpeg cubriendo todo el bloque.
+  El resultado es una foto "tapada" por un velo de color de
+  marca, para que el texto blanco se lea perfecto encima.
+*/
+.cta-section {
+  padding: 86px 0;
+  background:
+    linear-gradient(rgba(11, 23, 38, .92), rgba(23, 59, 115, .90)),
+    url("img/faena-2.jpeg") center/cover no-repeat;
+}
+
+/* El !important vuelve a ser necesario para ganarle a la regla más específica que Bootstrap aplica sobre los títulos. */
+.cta-section h2 {
+  color: #fff !important;
+  font-weight: 800;
+}
+
+.cta-section .lead {
+  max-width: 720px;
+}
+
+/* Variante amarilla de la etiqueta pequeña, usada solo en esta sección sobre fondo oscuro. */
+.section-label-light {
+  color: var(--aluva-yellow);
+}
+
+/* =========================================================
+   SECCIÓN TESTIMONIOS
+   ========================================================= */
+
+/* Cada testimonio: tarjeta blanca con una franja naranja arriba, simulando una "cita destacada". */
+.testimonial-card {
+  margin: 0;
+  background: #fff;
+  border-top: 4px solid var(--aluva-orange);
+  border-radius: .5rem;
+  box-shadow: 0 5px 18px rgba(11, 23, 38, .08);
+  padding: 1.8rem;
+}
+
+/* El texto de la cita se ve en cursiva, como suele hacerse con citas textuales. */
+.testimonial-card p {
+  font-size: 1.05rem;
+  font-style: italic;
+}
+
+/* El <footer> dentro del blockquote (nombre y cargo de quien opina) no lleva fondo propio, solo color de texto. */
+.testimonial-card footer {
+  color: var(--aluva-blue);
+  background: transparent;
+}
+
+.testimonial-card footer span {
+  color: var(--aluva-muted);
+  font-size: .92rem;
+}
+
+/* =========================================================
+   SECCIÓN CONTACTO
+   ========================================================= */
+
+.contact-section {
+  background: #fff;
+}
+
+/* Tarjeta con los datos fijos de contacto: fondo gris clarito + borde naranjo a la izquierda, igual que .info-card. */
+.contact-card {
+  background: var(--aluva-light);
+  border-radius: .6rem;
+  border-left: 5px solid var(--aluva-orange);
+  padding: 1.75rem;
+}
+
+.contact-card p:last-child {
+  margin-bottom: 0;
+}
+
+/* Enlaces (correo, Instagram, TikTok) en azul de marca y sin subrayado, con word-break para que no se corten mal los enlaces largos en pantallas chicas. */
+.contact-card a {
+  color: var(--aluva-blue);
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.contact-card a:hover,
+.contact-card a:focus {
+  color: #c96812;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.site-footer {
+  background: var(--aluva-navy);
+  border-top: 4px solid var(--aluva-orange);
+  padding: 28px 0;
+  font-size: .92rem;
+}
+
+/* =========================================================
+   RESPONSIVIDAD (media queries)
+   Estas reglas complementan los breakpoints que Bootstrap ya
+   trae por defecto (sm, md, lg, xl). Los números 991.98px y
+   575.98px son, a propósito, los mismos límites que usa
+   Bootstrap 4 para sus breakpoints "lg" y "sm", para que
+   nuestros ajustes cambien exactamente en el mismo punto en que
+   cambia la grilla del framework.
+   ========================================================= */
+
+/* Tablets y pantallas medianas hacia abajo (menos de 992px). */
+@media (max-width: 991.98px) {
+  body {
+    padding-top: 70px; /* el navbar colapsado es un poco más bajo, así que ajustamos el aire de arriba */
+  }
+
+  .aluva-navbar .nav-link {
+    margin: .18rem 0;   /* en el menú desplegado (vertical) separamos los links entre sí con margen arriba/abajo en vez de a los costados */
+    padding-left: .75rem;
+  }
+
+  .hero-section {
+    min-height: 70vh; /* un poco menos de altura, para no obligar a hacer tanto scroll en pantallas más bajas */
+  }
+
+  .hero-overlay {
+    background: rgba(7, 18, 31, .78); /* se simplifica el degradado a un color plano, más liviano visualmente en pantallas chicas */
+  }
+
+  .section-space {
+    padding: 70px 0; /* se reduce el respiro vertical de las secciones */
+  }
+}
+
+/* Celulares (menos de 576px). */
+@media (max-width: 575.98px) {
+  .hero-section {
+    min-height: 72vh;
+  }
+
+  .hero-section h1 {
+    font-size: 2.15rem; /* el título gigante se achica para que no ocupe toda la pantalla en un celular */
+  }
+
+  .hero-kicker,
+  .section-label {
+    letter-spacing: .1rem; /* menos separación entre letras, para que la etiqueta no se corte de línea en pantallas angostas */
+  }
+
+  .section-space,
+  .cta-section {
+    padding: 56px 0;
+  }
+
+  .product-image {
+    height: 250px; /* las fotos de producto se achican un poco para que las tarjetas no queden demasiado largas en una sola columna */
+  }
+}
+
+/*
+  Algunas personas configuran su sistema operativo para reducir
+  animaciones (por mareos, epilepsia fotosensible, etc.). Esta
+  media query detecta esa preferencia y apaga el scroll suave y
+  las transiciones de hover, dejando la navegación instantánea.
+*/
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .product-card,
+  .aluva-navbar .nav-link {
+    transition: none;
+  }
+}
+
+/* =============================================================
+   INTERACTIVIDAD DEL EXAMEN FINAL
+   Estilos que acompañan las tres funcionalidades de script.js:
+   filtro de productos, alto contraste y validación de formulario.
+   ============================================================= */
+
+/* Botones de filtro (Todos / Vestuario / Alta visibilidad / Accesorios) en su estado normal: fondo blanco, texto azul. */
+.product-filters .btn-filter {
+  margin: .25rem;
+  color: var(--aluva-blue);
+  background: #fff;
+  border: 1px solid #cfd6df;
+  font-weight: 700;
+}
+
+/*
+  Estado "encendido" del botón: se aplica tanto al pasar el mouse
+  (hover), al enfocarlo con teclado (focus) como cuando JavaScript
+  le agregó la clase "active" (el filtro actualmente seleccionado).
+  Así el botón activo se ve exactamente igual que si el mouse
+  estuviera encima, reforzando que "esto es lo que está aplicado ahora".
+*/
+.product-filters .btn-filter:hover,
+.product-filters .btn-filter:focus,
+.product-filters .btn-filter.active {
+  color: #fff;
+  background: var(--aluva-blue);
+  border-color: var(--aluva-blue);
+}
+
+/* Tarjeta blanca que envuelve todo el formulario de contacto. */
+.contact-form {
+  background: #fff;
+  border: 1px solid #e1e6ec;
+  border-radius: .6rem;
+  box-shadow: 0 5px 18px rgba(11, 23, 38, .08);
+  padding: 1.75rem;
+}
+
+.contact-form label {
+  color: var(--aluva-navy);
+  font-weight: 700;
+}
+
+/*
+  ===========================================================
+  MODO DE ALTO CONTRASTE
+  Esta clase la agrega y quita script.js sobre el <body> cada
+  vez que se aprieta el botón "Alto contraste" del menú
+  (usando classList.toggle('alto-contraste')). Todo lo que está
+  bajo "body.alto-contraste" en este archivo queda "apagado"
+  hasta que esa clase exista en el body.
+  ===========================================================
+*/
+
+/* Fondo negro y texto blanco para toda la página. */
+body.alto-contraste {
+  color: #fff;
+  background: #000;
+}
+
+/*
+  Muchos bloques del sitio (tarjetas, fondos claros, etc.) tienen
+  su propio color de fondo definido más arriba en este archivo.
+  Para que el alto contraste realmente se note en TODOS lados,
+  hay que volver a fijar fondo negro y texto blanco en cada uno
+  de esos bloques, con !important para asegurarnos de que gane
+  por sobre la regla "normal" (sin alto contraste) de cada clase.
+  border-color amarillo ayuda a que se sigan distinguiendo los
+  bordes de cada tarjeta sobre el fondo negro.
+*/
+body.alto-contraste .bg-light,
+body.alto-contraste .contact-section,
+body.alto-contraste .product-card .card-body,
+body.alto-contraste .product-image,
+body.alto-contraste .info-card,
+body.alto-contraste .testimonial-card,
+body.alto-contraste .contact-card,
+body.alto-contraste .contact-form {
+  color: #fff;
+  background: #000 !important;
+  border-color: #ffeb3b;
+}
+
+/* Todos los textos (títulos, párrafos, negritas) pasan a blanco puro para máximo contraste sobre el fondo negro. */
+body.alto-contraste h1,
+body.alto-contraste h2,
+body.alto-contraste h3,
+body.alto-contraste p,
+body.alto-contraste label,
+body.alto-contraste strong,
+body.alto-contraste .section-heading p,
+body.alto-contraste .product-card p,
+body.alto-contraste .testimonial-card footer,
+body.alto-contraste .testimonial-card footer span,
+body.alto-contraste .contact-card a {
+  color: #fff !important;
+}
+
+/* Las etiquetas pequeñas y los enlaces pasan a amarillo brillante, para que sigan destacando (no blanco plano) y se note que son interactivos/especiales. */
+body.alto-contraste .section-label,
+body.alto-contraste .hero-kicker,
+body.alto-contraste a {
+  color: #ffeb3b !important;
+}
+
+/* Botones y campos de formulario reciben un borde amarillo bien grueso, para que se distingan claramente incluso sin depender del color de fondo. */
+body.alto-contraste .btn,
+body.alto-contraste .form-control {
+  border: 2px solid #ffeb3b;
+}
+/*Se agrega botón de WhatsApp para atención inmediata*/
+.btn-whatsapp {
+    display: inline-block;
+    background-color: #25d366; /* Verde oficial de WhatsApp */
+    color: white !important; /* Asegura que el texto sea blanco */
+    padding: 12px 25px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+    .btn-whatsapp:hover {
+        background-color: #128c7e; /* Verde oscuro al pasar el cursor */
+        transform: translateY(-2px); /* Pequeña animación hacia arriba */
+    }

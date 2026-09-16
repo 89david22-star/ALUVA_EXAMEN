@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<!--
+  lang="es" le dice al navegador (y a lectores de pantalla) que el
+  contenido de la página está en español, para que pronuncien y
+  traduzcan correctamente.
+-->
+<html lang="es">
+<head>
+  <!-- UTF-8 permite usar tildes, ñ y símbolos como "·" sin que se vean rotos. -->
+  <meta charset="UTF-8">
+
+  <!--
+    Esta línea es la que hace que el sitio sea "responsivo" desde el navegador:
+    width=device-width  -> el ancho de la página se ajusta al ancho real del dispositivo
+                            (celular, tablet, notebook), en vez de mostrar una versión
+                            de escritorio reducida.
+    initial-scale=1     -> la página empieza sin zoom aplicado.
+    shrink-to-fit=no     -> evita que Safari en iOS intente "encoger" la página sola.
+  -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Texto que Google u otros buscadores muestran bajo el título en los resultados de búsqueda. -->
+  <meta name="description" content="ALUVA - Ropa de trabajo, EPP y vestuario personalizado para faena y uso diario.">
+
+  <!-- Título que aparece en la pestaña del navegador. -->
+  <title>ALUVA | Vestuario técnico y EPP</title>
+
+  <!--
+    EVALUACIÓN N.º 3 - MIGRACIÓN A TEMPLATE ESTÁNDAR
+    Template seleccionado: "Startup Dark", incluido en las Plantillas de Trabajo.
+    Se utiliza su base Bootstrap 4 para navegación, grilla, tarjetas y diseño responsivo.
+    Se conserva el contenido original de ALUVA desarrollado en las evaluaciones anteriores.
+  -->
+
+  <!--
+    IMPORTANTE: el orden de estas dos líneas importa.
+    1) Primero se carga bootstrap.min.css: define TODOS los estilos base del framework
+       (grilla, botones, tarjetas, formularios, navbar, etc.).
+    2) Después se carga style.css (el nuestro): como se lee después, en caso de que
+       una misma regla exista en los dos archivos, gana la nuestra. Así podemos "pintar"
+       los componentes de Bootstrap con los colores de ALUVA sin pelear con el framework.
+  -->
+  <link rel="stylesheet" href="vendor/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!--
+    NAVBAR (menú superior)
+    ------------------------------------------------------------------
+    navbar-expand-lg  -> en pantallas grandes (lg y más) el menú se ve horizontal y
+                         siempre visible; en pantallas más chicas se oculta detrás
+                         de un botón "hamburguesa".
+    navbar-dark       -> le dice a Bootstrap que el fondo es oscuro, así los textos
+                         del menú se pintan claros automáticamente.
+    fixed-top         -> el menú queda "pegado" arriba de la pantalla aunque se haga scroll.
+    aluva-navbar      -> clase propia (definida en style.css) para poner el color y
+                         el borde naranjo de la marca ALUVA.
+  -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top aluva-navbar">
+    <div class="container">
+
+      <!-- Logo + nombre de la marca. Al hacer click vuelve al inicio (ancla #inicio). -->
+      <a class="navbar-brand d-flex align-items-center" href="#inicio" aria-label="Ir al inicio de ALUVA">
+        <img src="img/logo-aluva.jpeg" alt="Logo ALUVA" class="brand-logo mr-2">
+        <span>ALUVA</span>
+      </a>
+
+      <!--
+        BOTÓN HAMBURGUESA (solo visible en pantallas chicas).
+        data-toggle="collapse" y data-target="#menuAluva" son atributos que lee
+        Bootstrap (con ayuda de jQuery) para saber qué bloque debe mostrar/ocultar
+        cuando el usuario hace click: en este caso, el <div id="menuAluva"> de abajo.
+        aria-expanded y aria-label ayudan a que lectores de pantalla entiendan
+        que este botón abre o cierra un menú.
+      -->
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menuAluva"
+              aria-controls="menuAluva" aria-expanded="false" aria-label="Abrir menú de navegación">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!--
+        Este <div> es el que el botón de arriba muestra/oculta.
+        En pantallas grandes (por la clase navbar-expand-lg de más arriba) siempre
+        está visible; en pantallas chicas empieza oculto hasta que se toca el botón.
+      -->
+      <div class="collapse navbar-collapse" id="menuAluva">
+        <ul class="navbar-nav ml-auto align-items-lg-center">
+          <!-- Cada enlace apunta a un "ancla" (id) de una sección más abajo en la misma página. -->
+          <li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="#nosotros">Quiénes somos</a></li>
+          <li class="nav-item"><a class="nav-link" href="#productos">Productos</a></li>
+          <li class="nav-item"><a class="nav-link" href="#personalizacion">Personalización</a></li>
+          <li class="nav-item"><a class="nav-link" href="#testimonios">Testimonios</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+
+          <li class="nav-item ml-lg-2">
+            <!--
+              BOTÓN DE ALTO CONTRASTE
+              No tiene lógica propia en HTML: solo existe aquí como un botón con id.
+              Todo el "cerebro" de este botón (qué hace al hacer click) está en script.js,
+              que busca este mismo id ("btnContraste") y le agrega el evento click.
+              aria-pressed="false" indica el estado inicial (apagado) para lectores
+              de pantalla; script.js lo cambia a "true"/"false" cada vez que se activa.
+            -->
+            <button id="btnContraste" class="btn btn-sm btn-outline-warning mt-2 mt-lg-0" type="button"
+                    aria-pressed="false" title="Activar o desactivar alto contraste">
+              Alto contraste
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!--
+      SECCIÓN INICIO / HERO
+      ------------------------------------------------------------------
+      Es el primer bloque grande que ve el usuario al entrar. La imagen de fondo
+      (faena-1.jpeg) se define en style.css con background-image, y aquí encima
+      se dibuja una capa oscura semitransparente (.hero-overlay) para que el
+      texto blanco se siga leyendo bien sobre la foto.
+      d-flex align-items-center centra verticalmente el contenido dentro del hero.
+    -->
+    <section id="inicio" class="hero-section d-flex align-items-center">
+      <!-- Capa oscura sobre la foto de fondo, solo para mejorar el contraste del texto. -->
+      <div class="hero-overlay"></div>
+
+      <!-- position-relative es necesario para que este bloque quede "por encima" del overlay. -->
+      <div class="container position-relative hero-content">
+        <div class="row align-items-center">
+          <!-- col-lg-7: en pantallas grandes el texto ocupa 7 de 12 columnas (no todo el ancho). -->
+          <div class="col-lg-7 text-white">
+            <p class="hero-kicker">VESTUARIO TÉCNICO · EPP · PERSONALIZACIÓN</p>
+            <h1 class="display-4 font-weight-bold">Ropa preparada para la faena y la vida diaria</h1>
+            <p class="lead">Calidad, innovación en textiles y la resistencia que tu equipo necesita.</p>
+            <div class="mt-4">
+              <!-- Los dos botones llevan a otras secciones de la misma página (anclas). -->
+              <a class="btn btn-aluva btn-lg mr-2 mb-2" href="#productos">Ver productos</a>
+              <a class="btn btn-outline-light btn-lg mb-2" href="#contacto">Contactar</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!--
+      SECCIÓN QUIÉNES SOMOS
+      ------------------------------------------------------------------
+      bg-light: fondo gris muy claro que Bootstrap ya trae listo, para diferenciar
+      visualmente esta sección de la anterior (hero) y de la siguiente.
+    -->
+    <section id="nosotros" class="section-space bg-light">
+      <div class="container">
+        <!-- Encabezado centrado de la sección: etiqueta pequeña + título + bajada. -->
+        <div class="section-heading text-center mx-auto mb-5">
+          <span class="section-label">ALUVA</span>
+          <h2>Quiénes somos</h2>
+          <p>Soluciones de vestuario para personas y equipos que trabajan en condiciones exigentes.</p>
+        </div>
+
+        <div class="row align-items-center">
+          <!-- Columna izquierda: foto. img-fluid hace que la imagen nunca se salga de su columna. -->
+          <div class="col-lg-6 mb-4 mb-lg-0">
+            <img src="img/faena-2.jpeg" class="img-fluid rounded shadow-sm about-photo"
+                 alt="Cliente utilizando vestuario ALUVA en faena">
+          </div>
+          <!-- Columna derecha: texto descriptivo + tarjetas de Misión y Visión. -->
+          <div class="col-lg-6">
+            <p>En ALUVA nos especializamos en el diseño, confección y distribución de ropa de trabajo, vestuario corporativo y Equipos de Protección Personal (EPP). Nacimos para responder a las exigencias reales del sector faenero e industrial, combinando durabilidad, seguridad, comodidad y personalización.</p>
+
+            <!-- .info-card es una clase propia (style.css) que le pone fondo blanco y borde naranjo a la izquierda. -->
+            <div class="info-card mt-4">
+              <h3>Misión</h3>
+              <p>Proveer vestuario técnico, EPP y prendas corporativas de alta durabilidad y funcionalidad, diseñadas para resistir las condiciones más exigentes del trabajo faenero y la vida diaria, integrando personalización de marca y tecnología textil en cada producto.</p>
+            </div>
+
+            <div class="info-card mt-3">
+              <h3>Visión</h3>
+              <p>Ser el referente y aliado estratégico clave en la confección y suministro de ropa industrial, EPP y vestuario personalizado, destacados por la innovación constante en materiales, el diseño a medida y el compromiso con la seguridad y bienestar de nuestros usuarios.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!--
+      SECCIÓN PRODUCTOS
+      ------------------------------------------------------------------
+      Acá viven el catálogo Y el filtro interactivo. El filtro funciona así:
+      1) Cada botón de abajo tiene un atributo data-filter (por ejemplo "vestuario").
+      2) Cada producto (más abajo) tiene un atributo data-category con su categoría.
+      3) script.js compara ambos atributos: si coinciden, muestra el producto;
+         si no, lo oculta agregándole la clase "d-none" (que Bootstrap usa para
+         poner display:none).
+      Todo esto pasa en el navegador del usuario, sin recargar la página.
+    -->
+    <section id="productos" class="section-space">
+      <div class="container">
+        <div class="section-heading text-center mx-auto mb-5">
+          <span class="section-label">CATÁLOGO</span>
+          <h2>Productos destacados</h2>
+          <p>Vestuario técnico y elementos pensados para comodidad, resistencia y seguridad.</p>
+        </div>
+
+        <!--
+          BOTONES DE FILTRO
+          role="group" + aria-label le avisan a lectores de pantalla que este bloque
+          de botones funciona como un grupo relacionado (como una barra de filtros).
+          El botón "Todos" arranca con la clase "active" porque es el filtro por defecto.
+        -->
+        <div class="product-filters text-center mb-4" role="group" aria-label="Filtrar productos por categoría">
+          <button class="btn btn-filter active" type="button" data-filter="todos">Todos</button>
+          <button class="btn btn-filter" type="button" data-filter="vestuario">Vestuario</button>
+          <button class="btn btn-filter" type="button" data-filter="visibilidad">Alta visibilidad</button>
+          <button class="btn btn-filter" type="button" data-filter="accesorios">Accesorios</button>
+        </div>
+
+        <!--
+          Este párrafo lo actualiza script.js cada vez que se aplica un filtro
+          ("Mostrando 3 productos.", etc.). aria-live="polite" hace que un lector
+          de pantalla anuncie el cambio de texto automáticamente, sin que el
+          usuario tenga que buscarlo con el cursor.
+        -->
+        <p id="resultadoFiltro" class="text-center text-muted mb-4" aria-live="polite">Mostrando 9 productos.</p>
+
+        <!-- id="listaProductos" no lo usa el JS actual, pero sirve como referencia clara del bloque. -->
+        <div class="row" id="listaProductos">
+
+          <!--
+            CADA PRODUCTO:
+            - "product-item" + "data-category" son el gancho que usa el filtro de JS.
+            - col-sm-6 col-lg-4 -> 2 columnas en tablet, 3 columnas en pantallas grandes.
+            - La tarjeta (.card.product-card) es un componente de Bootstrap (card)
+              combinado con estilos propios (product-card) para la sombra y el hover.
+          -->
+          <div class="col-sm-6 col-lg-4 mb-4 product-item" data-category="vestuario">
+            <article class="card product-card h-100">
+              <img src="img/camisa-jubae.jpeg" class="card-img-top product-image" alt="Camisa Ripstop Jubae">
+              <div class="card-body"><h3 class="h5">Camisa Ripstop Jubae</h3><p class="card-text">Vestuario técnico para uso laboral y faena.</p></div>
+            </article>
+          </div>
+
+          <div class="col-sm-6 col-lg-4 mb-4 product-item" data-category="vestuario">
+            <article class="card product-card h-100">
+              <img src="img/chaqueta-softshell.jpeg" class="card-img-top product-image" alt="Chaqueta Softshell">
+              <div class="card-body"><h3 class="h5">Chaqueta Softshell</h3><p class="card-text">Prenda resistente para condiciones de trabajo exigentes.</p></div>
+            </article>
+          </div>
+
+          <div class="col-sm-6 col-lg-4 mb-4 product-item" data-category="vestuario">
+            <article class="card product-card h-100">
+              <img src="img/pantalon-ripstop.jpeg" class="card-img-top product-image" alt="Pantalón Ripstop">
+              <div class="card-body"><h3 class="h5">Pantalón Ripstop</h3><p class="card-text">Pantalón técnico pensado para comodidad y resistencia.</p></div>
+            </article>
+          </div>
+
+          <div class="col-sm-6 col-lg-4 mb-4 product-item" data-category="visibilidad">
+            <article class="card product-card h-100">
+              <img src="img/chaleco-amarillo.jpeg" class="card-img-top product-image" alt="Chaleco geólogo amarillo">
+              <div class="card-body"><h3 class="h5">Chaleco geólogo amarillo</h3><p class="card-text">Alta visibilidad para labores en terreno.</p></div>
+            </article>
+          </div>
+
+          <div class="col-sm-6 col-lg-4 mb-4 product-item" data-category="visibilidad">
+            <article class="card product-card h-100">
+              <img src="img/chaleco-naranjo.jpeg" class="card-img-top product-image" alt="Chaleco geólogo naranjo">
+              <div class="card-body"><h3 class="h5">Chaleco geólogo naranjo</h3><p class="card-text">Vestuario de alta visibilidad para faena.</p></div>
+            </article>
+          </div>
+
+          <div class="col-sm-6 col-lg-4 mb-4 product-item" data-category="accesorios">
+            <article class="card product-card h-100">
+              <img src="img/bandana-negra.jpeg" class="card-img-top product-image" alt="Bandana negra">
+              <div class="card-body"><h3 class="h5">Bandana negra</h3><p class="card-text">Accesorio funcional para actividades de terreno.</p></div>
+            </article>
+          </div>
+
+          <div class="col-sm-6 col-lg-4 mb-4 product-item" data-category="accesorios">
+            <article class="card product-card h-100">
+              <img src="img/gorro-negro.jpeg" class="card-img-top product-image" alt="Gorro negro reflectante">
+              <div class="card-body"><h3 class="h5">Gorro reflectante</h3><p class="card-text">Complemento de protección para trabajo en exterior.</p></div>
+            </article>
+          </div>
+
+          <div class="col-sm-6 col-lg-4 mb-4 product-item" data-category="vestuario">
+            <article class="card product-card h-100">
+              <img src="img/polera-negra.jpeg" class="card-img-top product-image" alt="Polera negra ALUVA">
+              <div class="card-body"><h3 class="h5">Polera técnica</h3><p class="card-text">Prenda cómoda para uso diario y corporativo.</p></div>
+            </article>
+          </div>
+
+          <div class="col-sm-6 col-lg-4 mb-4 product-item" data-category="vestuario">
+            <article class="card product-card h-100">
+              <img src="img/poleron-gris.jpeg" class="card-img-top product-image" alt="Polerón gris ALUVA">
+              <div class="card-body"><h3 class="h5">Polerón gris</h3><p class="card-text">Abrigo cómodo para uso laboral y cotidiano.</p></div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!--
+      SECCIÓN PERSONALIZACIÓN (llamado a la acción / CTA)
+      ------------------------------------------------------------------
+      Banda a todo el ancho con fondo azul + foto (definido en style.css con
+      un gradiente encima de faena-2.jpeg) para destacar el mensaje de
+      personalización antes de llegar a Contacto.
+    -->
+    <section id="personalizacion" class="cta-section text-white">
+      <div class="container text-center">
+        <span class="section-label section-label-light">IDENTIDAD CORPORATIVA</span>
+        <h2>Personaliza tu equipo</h2>
+        <p class="lead mx-auto">Diseñamos y personalizamos prendas con la identidad de tu empresa o según tus gustos personales.</p>
+        <a class="btn btn-warning btn-lg mt-2" href="#contacto">Diseña o personaliza tu prenda</a>
+      </div>
+    </section>
+
+    <!--
+      SECCIÓN TESTIMONIOS
+      ------------------------------------------------------------------
+      <blockquote> es la etiqueta semántica correcta para citas textuales de
+      clientes; <footer> dentro de cada blockquote identifica quién la dijo.
+    -->
+    <section id="testimonios" class="section-space bg-light">
+      <div class="container">
+        <div class="section-heading text-center mx-auto mb-5">
+          <span class="section-label">EXPERIENCIAS</span>
+          <h2>Testimonios</h2>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-6 mb-4">
+            <blockquote class="testimonial-card h-100">
+              <p>“Equipar a nuestra cuadrilla con ALUVA ha sido un gran acierto. La calidad de las parkas y chaquetas resiste perfecto las condiciones de la faena, y la personalización del logo de la empresa quedó impecable.”</p>
+              <footer><strong>Ignacio S.</strong><br><span>Encargado de Operaciones y Prevención</span></footer>
+            </blockquote>
+          </div>
+          <div class="col-lg-6 mb-4">
+            <blockquote class="testimonial-card h-100">
+              <p>“Mandé a personalizar unas prendas para mi trabajo de terreno y la atención fue increíble. Excelente confección, la ropa es muy cómoda y los detalles se notan de inmediato. 100% recomendados.”</p>
+              <footer><strong>Cristian M.</strong><br><span>Supervisor de Operaciones</span></footer>
+            </blockquote>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!--
+      SECCIÓN CONTACTO
+      ------------------------------------------------------------------
+      Tiene dos partes: los datos de contacto fijos (izquierda/arriba) y el
+      formulario de solicitud (derecha/abajo), que se valida con JavaScript.
+    -->
+    <section id="contacto" class="section-space contact-section">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-5 mb-4 mb-lg-0">
+            <span class="section-label">HABLEMOS</span>
+            <h2>Contacto</h2>
+            <p>¿Necesitas vestuario para tu equipo o quieres personalizar una prenda? Contáctanos por nuestros canales.</p>
+          </div>
+          <div class="col-lg-7">
+              <!-- Datos fijos de contacto. target="_blank" abre Instagram/TikTok en una pestaña nueva;
+         rel="noopener noreferrer" es una medida de seguridad recomendada siempre que se usa target="_blank". -->
+              <div class="contact-card mb-4">
+                  <p><strong>Dirección:</strong> Tornamesa 42, Los Andes.</p>
+                  <p><strong>Correo:</strong> <a href="mailto:aluva.seguridad@gmail.com">aluva.seguridad@gmail.com</a></p>
+                  <p><strong>Instagram:</strong> <a href="https://www.instagram.com/aluva.outdoor" target="_blank" rel="noopener noreferrer">@aluva.outdoor</a></p>
+                  <p><strong>TikTok:</strong> <a href="https://www.tiktok.com/@aluva.outdoor" target="_blank" rel="noopener noreferrer">@aluva.outdoor</a></p>
+              </div>
+
+              <!--
+      FORMULARIO DE CONTACTO
+      novalidate: le dice al navegador "no uses tu validación automática
+      (los globitos nativos)", porque vamos a validar nosotros mismos con
+      JavaScript y mostrar los mensajes de error con nuestro propio estilo.
+
+      Cada <input>/<textarea> tiene un id (nombre, correo, mensaje) que
+      script.js usa para encontrarlos con document.getElementById().
+      Cada <div class="invalid-feedback"> es el mensaje de error que
+      Bootstrap muestra automáticamente cuando el campo de al lado tiene
+      la clase "is-invalid" (esa clase la agrega/quita script.js).
+    -->
+              <form id="formContacto" class="contact-form" novalidate>
+                  <h3 class="h5 font-weight-bold mb-3">Solicita información</h3>
+
+                  <div class="form-group">
+                      <label for="nombre">Nombre</label>
+                      <input class="form-control" type="text" id="nombre" name="nombre" placeholder="Tu nombre">
+                      <div class="invalid-feedback" id="errorNombre">Ingresa tu nombre.</div>
+                  </div>
+
+                  <div class="form-group">
+                      <label for="correo">Correo</label>
+                      <input class="form-control" type="email" id="correo" name="correo" placeholder="nombre@correo.cl">
+                      <div class="invalid-feedback" id="errorCorreo">Ingresa un correo válido.</div>
+                  </div>
+
+                  <div class="form-group">
+                      <label for="mensaje">Mensaje</label>
+                      <textarea class="form-control" id="mensaje" name="mensaje" rows="4" placeholder="Cuéntanos qué necesitas"></textarea>
+                      <div class="invalid-feedback" id="errorMensaje">Escribe un mensaje de al menos 10 caracteres.</div>
+                  </div>
+
+                  <button class="btn btn-aluva" type="submit">Enviar solicitud</button>
+
+                  <!--
+          Mensaje de éxito. Empieza oculto (clase "d-none"); script.js se la
+          quita cuando el formulario pasa la validación. role="status" +
+          aria-live="polite" hacen que se anuncie automáticamente a lectores
+          de pantalla, igual que el contador de productos filtrados.
+        -->
+                  <div id="mensajeFormulario" class="alert alert-success mt-3 d-none" role="status" aria-live="polite"></div>
+              </form>
+              <div class="whatsapp-container" style="text-align: center; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+                  <p style="margin-bottom: 15px; font-weight: 600;">¿Prefieres una atención inmediata? Escríbenos directamente:</p>
+                  <a href="https://wa.me/56936610671"
+                     class="btn-whatsapp"
+                     target="_blank"
+                     rel="noopener noreferrer">
+                      Chatear en WhatsApp
+                  </a>
+                  <!--Se agrega la opcón de contacto directo vía WhatsApp, si es que el cliente necesita una atención 
+                      más rápida o urgente-->
+              </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER: barra final oscura con el nombre de la marca y el año de copyright. -->
+  <footer class="site-footer text-white">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6 text-center text-md-left mb-2 mb-md-0">
+          <strong>ALUVA</strong> · Ropa y elementos de protección personal
+        </div>
+        <div class="col-md-6 text-center text-md-right">
+          <span>© 2026 ALUVA</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!--
+    SCRIPTS AL FINAL DEL BODY
+    ------------------------------------------------------------------
+    Se cargan al final (y no en el <head>) para que el HTML se dibuje primero
+    y la página no quede "en blanco" esperando que baje el JavaScript.
+    El ORDEN aquí es obligatorio:
+      1) jquery.min.js            -> Bootstrap 4 lo necesita para funcionar.
+      2) bootstrap.bundle.min.js  -> trae la lógica del menú colapsable (navbar-toggler),
+                                     y depende de que jQuery ya esté cargado.
+      3) script.js (el nuestro)   -> va al final porque busca elementos que ya
+                                     deben existir en el HTML (y no depende de
+                                     jQuery, pero convive con él en la misma página).
+  -->
+  <script src="vendor/js/jquery.min.js"></script>
+  <script src="vendor/js/bootstrap.bundle.min.js"></script>
+  <!-- JavaScript propio de ALUVA: filtros, accesibilidad y validación de formulario. -->
+  <script src="script.js"></script>
+</body>
+</html>
