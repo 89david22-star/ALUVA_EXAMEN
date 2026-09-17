@@ -7,7 +7,7 @@
 ## 🚀 Despliegue en Vivo
 El sitio web se encuentra completamente operativo, optimizado y desplegado en la plataforma de hosting en la nube **Netlify**. 
 
-🔗 **[VER SITIO DESPLEGADO EN NETLIFY](https://netlify.app)** *(Nota: Reemplaza este enlace por la URL real que te entregue Netlify al subir tu proyecto)*
+🔗 **[VER SITIO DESPLEGADO EN NETLIFY]([https://netlify.app](https://aluva-examen.netlify.app/))** *(Nota: Reemplaza este enlace por la URL real que te entregue Netlify al subir tu proyecto)*
 
 ---
 
